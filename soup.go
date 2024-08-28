@@ -55,23 +55,23 @@ const (
 // to see if it has more specific details for you, like in the case of a ErrElementNotFound
 // type of error.
 type Error struct {
-	Type ErrorType
-	msg  string
+	Type ErrorType `json:"type"`
+	Msg  string    `json:"msg"`
 }
 
 func (se Error) Error() string {
-	return se.msg
+	return se.Msg
 }
 
-func newError(t ErrorType, msg string) Error {
-	return Error{Type: t, msg: msg}
+func newError(t ErrorType, msg string) *Error {
+	return &Error{Type: t, Msg: msg}
 }
 
 // Root is a structure containing a pointer to an html node, the node value, and an error variable to return an error if one occurred
 type Root struct {
-	Pointer   *html.Node
-	NodeValue string
-	Error     error
+	Pointer   *html.Node `json:"-"`
+	NodeValue string     `json:"node_value"`
+	Error     *Error     `json:"error"`
 }
 
 // Init a new HTTP client for use when the client doesn't want to use their own.
@@ -448,6 +448,10 @@ func (r Root) HTML() string {
 		return ""
 	}
 	return buf.String()
+}
+
+func (r Root) Html() string {
+	return r.HTML()
 }
 
 // FullText returns the string inside even a nested element
